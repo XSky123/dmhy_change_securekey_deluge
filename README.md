@@ -1,7 +1,9 @@
 # 智能修改deluge的单种securekey
 ## 依赖
-deluge_client
-requests
+- deluge_client
+- requests
+
+（依赖库采用pip安装：控制台/Shell下输入 pip install 包名）
 
 ## 你需要准备
 - 合理的代理/Hosts设置保证dmhy.org访问
@@ -11,7 +13,7 @@ requests
 
 ## 使用方法
 修改 CHANGE INFO BELOW 下方几行参数为你自己的参数
-进入控制台
+进入控制台/Shell
 cd进入所在脚本所在目录
 python xxxx.py运行
 
