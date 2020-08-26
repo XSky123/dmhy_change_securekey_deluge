@@ -1,4 +1,4 @@
-# 智能修改deluge的单种securekey
+# 智能更新deluge的单种securekey
 ## 依赖
 - deluge_client
 - requests
