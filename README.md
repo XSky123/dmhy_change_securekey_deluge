@@ -12,9 +12,9 @@
 - Deluge用户名密码
 
 ## 使用方法
-修改 CHANGE INFO BELOW 下方几行参数为你自己的参数
-进入控制台/Shell
-cd进入所在脚本所在目录
-python xxxx.py运行
+- 修改 CHANGE INFO BELOW 下方几行参数为你自己的参数
+- 进入控制台/Shell
+- `cd`进入所在脚本所在目录
+- `python xxxx.py`回车运行
 
 
