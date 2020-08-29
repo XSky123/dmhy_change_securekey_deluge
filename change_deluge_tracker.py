@@ -5,14 +5,18 @@ import time
 # ****************
 # CHANGE INFO BELOW
 # ****************
-__APIURL__ = "" # Get Yours From https://u2.dmhy.org/privatetorrents.php
-__DE_URL__ = ""
+__APIURL__ = "" # Get yours From https://u2.dmhy.org/privatetorrents.php
+__DE_URL__ = "" # Don't include protocol (http/https)
 __DE_PORT__ = 11111 # Number not string, it's NOT your WEBUI port, get this from WEBUI Connection Manager
 __DE_USER__ = ""
 __DE_PW__ = ""
-
+# ****************
+# CHANGE INFO ABOVE
+# ****************
 
 count = 0
+__MAX_REQ__ = 100
+__SLEEP__ = 5
 
 client = DelugeRPCClient(__DE_URL__, __DE_PORT__, __DE_USER__, __DE_PW__) 
 print("Connecting to Deluge...")
@@ -21,14 +25,30 @@ print("Fetching DMHY torrents from Deluge...")
 torrent_list = client.core.get_torrents_status({},['trackers'])
 dmhy_torrent_hash_list = [hash_ for hash_ in torrent_list if "dmhy" in str(torrent_list[hash_][b'trackers'][0][b'url'])]
 dmhy_req_list = []
+requested_secure_list = []
+
+# Thx to makii@U2 with distributed requests (per 100 torrents)
+# Thx to Ender@U2 and 流哲@VoiceMemories who reported this problem.
+req = 1
 for i, hash_ in enumerate(dmhy_torrent_hash_list):
     dmhy_req_list.append({"jsonrpc": "2.0", "method": "query", "params": [str(hash_)[2:-1]], "id":i+1})
-print("Fetching Secure Code...")
+    if (i+1) % __MAX_REQ__ == 0:
+        print("Fetching Secure Code... Time {}".format(req))
+        resp = requests.post(__APIURL__, json=dmhy_req_list)
+        if resp.status_code != 200:
+            raise(Exception("Error with Code {} Pls Try Again!".format(resp.status_code)))
+        
+        requested_secure_list.extend(resp.json())
+        print("Sleep {} sec".format(__SLEEP__))
+        time.sleep(__SLEEP__)
+        req += 1
+        dmhy_req_list = []
+
+print("Fetching Secure Code... Time {}".format(req))
 resp = requests.post(__APIURL__, json=dmhy_req_list)
 if resp.status_code != 200:
-    raise(Exception("Error with Code {} Pls Try Again!".format(resp.status_code)))
-
-requested_secure_list = resp.json()
+       raise(Exception("Error with Code {} Pls Try Again!".format(resp.status_code)))
+print("Total requested secure list count: {}".format(len(requested_secure_list)))	
 
 error_torrent_hash_list = []
 print("Begin Updating...")
