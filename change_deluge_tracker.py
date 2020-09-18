@@ -48,6 +48,7 @@ print("Fetching Secure Code... Time {}".format(req))
 resp = requests.post(__APIURL__, json=dmhy_req_list)
 if resp.status_code != 200:
        raise(Exception("Error with Code {} Pls Try Again!".format(resp.status_code)))
+requested_secure_list.extend(resp.json())
 print("Total requested secure list count: {}".format(len(requested_secure_list)))	
 
 error_torrent_hash_list = []
